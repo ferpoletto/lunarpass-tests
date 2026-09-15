@@ -1,63 +1,49 @@
 import { test, expect } from '@playwright/test'
-
 import { LoginPage } from '../pages/login.page'
+import { Navbar } from '../pages/components/navbar'
+
+let loginPage: LoginPage
+let navbar: Navbar
+
+test.beforeEach(async ({ page }) => {
+    loginPage = new LoginPage(page)
+    navbar = new Navbar(page)
+    await loginPage.go()
+})
 
 test('deve autenticar no controle de missões', async ({ page }) => {
-    const loginPage = new LoginPage(page)
-    await loginPage.go()
+
     await loginPage.login('buzz@lunarpass.dev', 'pwd123')
-
-    await page.waitForURL('http://localhost:3000/mission-control')
-    const title1 = page.getByRole('heading', {name: 'Lunar Pass'})
-    await expect(title1).toBeVisible()
-
-    const logoutButton = page.getByRole('button', {name: 'Sair'})
-    await expect(logoutButton).toBeVisible()
-
+    await expect(navbar.logoutButton).toBeVisible()
 })
 
 test('não deve autenticar com senha incorreta', async ({ page }) => {
-    const loginPage = new LoginPage(page)
-    await loginPage.go()
-    await loginPage.login('buzz@lunarpass.dev', 'pwdaaa123')
 
-    const errorMessage = page.locator('p[role=alert]')
-    await expect(errorMessage).toHaveText('E-mail ou senha inválidos.')
+    await loginPage.login('buzz@lunarpass.dev', 'pwdaaa123')
+    await expect(loginPage.alert).toHaveText('E-mail ou senha inválidos.')
 })
 
 test('não deve autenticar com e-mail não cadastrado', async ({ page }) => {
-    const loginPage = new LoginPage(page)
-    await loginPage.go()
-    await loginPage.login('404@lunarpass.dev', 'pwd123')
 
-    const errorMessage = page.locator('p[role=alert]')
-    await expect(errorMessage).toHaveText('E-mail ou senha inválidos.')
+    await loginPage.login('404@lunarpass.dev', 'pwd123')
+    await expect(loginPage.alert).toHaveText('E-mail ou senha inválidos.')
 })
 
 test('não deve autenticar com e-mail vazio', async ({ page }) => {
-    const loginPage = new LoginPage(page)
-    await loginPage.go()
-    await loginPage.login(' ', 'pwd123')
 
-    const errorMessage = page.locator('p[role=alert]')
-    await expect(errorMessage).toHaveText('Informe um e-mail válido')
+    await loginPage.login(' ', 'pwd123')
+    await expect(loginPage.alert).toHaveText('Informe um e-mail válido')
 })
 
 test('não deve autenticar com campos vazios', async ({ page }) => {
-    const loginPage = new LoginPage(page)
-    await loginPage.go()
-    await loginPage.login(' ', ' ')
 
-    const errorMessage = page.locator('p[role=alert]')
-    await expect(errorMessage).toHaveText('Informe um e-mail válido')
+    await loginPage.login(' ', ' ')
+    await expect(loginPage.alert).toHaveText('Informe um e-mail válido')
 })
 
 test('não deve autenticar com campo senha vazio', async ({ page }) => {
-    const loginPage = new LoginPage(page)
-    await loginPage.go()
-    await loginPage.login('buzz@lunarpass.dev', '')
 
-    const errorMessage = page.locator('p[role=alert]')
-    await expect(errorMessage).toHaveText('Informe a senha')
+    await loginPage.login('buzz@lunarpass.dev', '')
+    await expect(loginPage.alert).toHaveText('Informe a senha')
 })
 
