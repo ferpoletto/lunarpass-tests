@@ -3,5 +3,6 @@ export interface Mission {
     rocket: string,
     lunarBase: string,
     departureDate: string,
+    returnDate: string,
     price: string
 }

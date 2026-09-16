@@ -3,14 +3,25 @@ import { LoginPage } from '../pages/login.page'
 import { Navbar } from '../pages/components/navbar'
 import { faker } from '@faker-js/faker'
 import { Mission } from '../support/mission'
+import { DashPage } from '../pages/dash.page'
+import { RegisterPage } from '../pages/register.page'
+import { Toasty } from '../pages/components/toasty'
+import { insertMission, deleteMission, deleteReservation, deleteTickets } from '../support/db'
 
 let loginPage: LoginPage
 let navbar: Navbar
+let dashPage: DashPage
+let toasty: Toasty
+let registerPage: RegisterPage
 
 test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page)
     navbar = new Navbar(page)
+    dashPage = new DashPage(page)
+    toasty = new Toasty(page)
+    registerPage = new RegisterPage(page)
     await loginPage.go()
+    await loginPage.login('buzz@lunarpass.dev', 'pwd123')
 })
 
 test('deve cadastrar uma nova missão', async ({ page }) => {
@@ -19,21 +30,53 @@ test('deve cadastrar uma nova missão', async ({ page }) => {
         rocket: 'Starship',
         lunarBase: 'aurora',
         departureDate: '2028-01-20',
+        returnDate: '2028-01-27',
         price: '1000'
     }
-    await loginPage.login('buzz@lunarpass.dev', 'pwd123')
-    await expect(navbar.logoutButton).toBeVisible({ timeout: 5000 })
 
-    await page.getByRole('link', { name: 'Nova missão' }).click()
-    await expect(page.getByRole('heading', { name: 'Programar missão' })).toBeVisible()
+    await dashPage.addButton.click()
+    await expect(registerPage.title).toBeVisible()
 
-    const missionId = 'LP-' + faker.string.alphanumeric({ length: { min: 5, max: 5 }, casing: 'upper' })
+    await registerPage.submitMission(mission)
+    await expect(toasty.message).toContainText('A nova missão foi adicionada ao catálogo e já está disponível para reservas.');
+})
 
-    await page.getByRole('textbox', { name: 'ID da missão' }).fill(mission.id)
-    await page.getByRole('textbox', { name: 'Foguete' }).fill(mission.rocket)
-    await page.getByLabel('Base lunar').selectOption(mission.lunarBase)
-    await page.getByRole('textbox', { name: 'Data de partida' }).fill(mission.departureDate)
-    await page.getByRole('spinbutton', { name: 'Preço por passagem (USD)' }).fill(mission.price.toString())
-    await page.getByRole('button', { name: 'Salvar missão' }).click()
-    await expect(page.getByRole('listitem')).toContainText('A nova missão foi adicionada ao catálogo e já está disponível para reservas.');
+test('não deve cadastrar missão com ID fora do padrão', async ({ page }) => {
+    const mission: Mission = {
+        id: faker.string.alphanumeric({ length: { min: 5, max: 5 }, casing: 'upper' }),
+        rocket: 'Starship',
+        lunarBase: 'aurora',
+        departureDate: '2028-01-20',
+        returnDate: '2028-01-27',
+        price: '1000'
+    }
+
+    await dashPage.addButton.click()
+    await expect(registerPage.title).toBeVisible()
+
+    await registerPage.submitMission(mission)
+    await expect(registerPage.alert).toContainText('Use o formato LP-0000')
+})
+
+
+test('não deve cadastrar missão com código duplicado', async ({ page }) => {
+    const mission: Mission = {
+        id: 'LP-DUPY1',
+        rocket: 'Starship',
+        lunarBase: 'aurora',
+        departureDate: '2028-01-20',
+        returnDate: '2028-01-27',
+        price: '1000'
+    }
+
+    await deleteReservation(mission.id)
+    //await deleteTickets(mission.id)
+    //await deleteMission(mission.id)
+    //await insertMission(mission.id)
+
+    await dashPage.addButton.click()
+    await expect(registerPage.title).toBeVisible()
+
+    await registerPage.submitMission(mission)
+    await expect(registerPage.alert).toContainText('Já existe uma missão com este ID.')
 })

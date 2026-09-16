@@ -1,13 +1,15 @@
 import {Page, Locator, expect} from '@playwright/test';
+import { Navbar } from './components/navbar';
 
 export class LoginPage {
     readonly page: Page;
     readonly alert: Locator;
+    readonly navbar: Navbar;
     
     constructor(page: Page) {
         this.page = page;
         this.alert = page.getByRole('alert');
-
+        this.navbar = new Navbar(page);
     }
 
     async go() {
@@ -21,5 +23,6 @@ export class LoginPage {
         await this.page.getByPlaceholder('Informe seu email').fill(email)
         await this.page.getByPlaceholder('Sua senha secreta').fill(password)
         await this.page.getByRole('button', {name: 'Entrar'}).click()
+        await expect(this.navbar.logoutButton).toBeVisible({ timeout: 5000 })
     }
 }
