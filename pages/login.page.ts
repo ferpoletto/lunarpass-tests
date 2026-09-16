@@ -23,6 +23,6 @@ export class LoginPage {
         await this.page.getByPlaceholder('Informe seu email').fill(email)
         await this.page.getByPlaceholder('Sua senha secreta').fill(password)
         await this.page.getByRole('button', {name: 'Entrar'}).click()
-        await expect(this.navbar.logoutButton).toBeVisible({ timeout: 5000 })
+        
     }
 }

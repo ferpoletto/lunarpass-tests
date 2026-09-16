@@ -6,7 +6,7 @@ import { Mission } from '../support/mission'
 import { DashPage } from '../pages/dash.page'
 import { RegisterPage } from '../pages/register.page'
 import { Toasty } from '../pages/components/toasty'
-import { insertMission, deleteMission, deleteReservation, deleteTickets } from '../support/db'
+import { insertMission, deleteMission, deleteReservation, deleteTicket } from '../support/db'
 
 let loginPage: LoginPage
 let navbar: Navbar
@@ -70,9 +70,9 @@ test('não deve cadastrar missão com código duplicado', async ({ page }) => {
     }
 
     await deleteReservation(mission.id)
-    //await deleteTickets(mission.id)
-    //await deleteMission(mission.id)
-    //await insertMission(mission.id)
+    await deleteTicket(mission.id)
+    await deleteMission(mission.id)
+    await insertMission(mission.id)
 
     await dashPage.addButton.click()
     await expect(registerPage.title).toBeVisible()
