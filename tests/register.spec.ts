@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 import { LoginPage } from '../pages/login.page'
 import { Navbar } from '../pages/components/navbar'
 import { faker } from '@faker-js/faker'
-import { Mission } from '../support/mission'
+import { Mission } from '../support/types'
 import { DashPage } from '../pages/dash.page'
 import { RegisterPage } from '../pages/register.page'
 import { Toasty } from '../pages/components/toasty'
@@ -26,13 +26,17 @@ test.beforeEach(async ({ page }) => {
 
 test('deve cadastrar uma nova missão', async ({ page }) => {
     const mission: Mission = {
-        id: 'LP-' + faker.string.alphanumeric({ length: { min: 5, max: 5 }, casing: 'upper' }),
+        id: 'LP-0128A',
         rocket: 'Starship',
-        lunarBase: 'aurora',
+        baseId: 'aurora',
         departureDate: '2028-01-20',
         returnDate: '2028-01-27',
-        price: '1000'
+        price: 1000.00
     }
+
+    await deleteReservation(mission.id)
+    await deleteTicket(mission.id)
+    await deleteMission(mission.id)
 
     await dashPage.addButton.click()
     await expect(registerPage.title).toBeVisible()
@@ -45,10 +49,10 @@ test('não deve cadastrar missão com ID fora do padrão', async ({ page }) => {
     const mission: Mission = {
         id: faker.string.alphanumeric({ length: { min: 5, max: 5 }, casing: 'upper' }),
         rocket: 'Starship',
-        lunarBase: 'aurora',
+        baseId: 'aurora',
         departureDate: '2028-01-20',
         returnDate: '2028-01-27',
-        price: '1000'
+        price: 1000.00
     }
 
     await dashPage.addButton.click()
@@ -63,16 +67,16 @@ test('não deve cadastrar missão com código duplicado', async ({ page }) => {
     const mission: Mission = {
         id: 'LP-DUPY1',
         rocket: 'Starship',
-        lunarBase: 'aurora',
+        baseId: 'aurora',
         departureDate: '2028-01-20',
         returnDate: '2028-01-27',
-        price: '1000'
+        price: 1000.00
     }
 
     await deleteReservation(mission.id)
     await deleteTicket(mission.id)
     await deleteMission(mission.id)
-    await insertMission(mission.id)
+    await insertMission(mission)
 
     await dashPage.addButton.click()
     await expect(registerPage.title).toBeVisible()
