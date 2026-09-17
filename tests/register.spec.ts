@@ -6,7 +6,8 @@ import { Mission } from '../support/types'
 import { DashPage } from '../pages/dash.page'
 import { RegisterPage } from '../pages/register.page'
 import { Toasty } from '../pages/components/toasty'
-import { insertMission, deleteMission, deleteReservation, deleteTicket } from '../support/db'
+import { insertMission, cleanMission, cleanAndInsertMission } from '../support/db'
+
 
 let loginPage: LoginPage
 let navbar: Navbar
@@ -34,9 +35,7 @@ test('deve cadastrar uma nova missão', async ({ page }) => {
         price: 1000.00
     }
 
-    await deleteReservation(mission.id)
-    await deleteTicket(mission.id)
-    await deleteMission(mission.id)
+    await cleanMission(mission)
 
     await dashPage.addButton.click()
     await expect(registerPage.title).toBeVisible()
@@ -62,7 +61,6 @@ test('não deve cadastrar missão com ID fora do padrão', async ({ page }) => {
     await expect(registerPage.alert).toContainText('Use o formato LP-0000')
 })
 
-
 test('não deve cadastrar missão com código duplicado', async ({ page }) => {
     const mission: Mission = {
         id: 'LP-DUPY1',
@@ -73,10 +71,7 @@ test('não deve cadastrar missão com código duplicado', async ({ page }) => {
         price: 1000.00
     }
 
-    await deleteReservation(mission.id)
-    await deleteTicket(mission.id)
-    await deleteMission(mission.id)
-    await insertMission(mission)
+    await cleanAndInsertMission(mission)
 
     await dashPage.addButton.click()
     await expect(registerPage.title).toBeVisible()

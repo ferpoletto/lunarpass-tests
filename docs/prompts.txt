@@ -1,0 +1,2 @@
+--Para converter uma documentação funcional em cenários de testes - Pedir outra IA melhorar prompt
+Organize toda a documentação funcional no formado MD (Copia e Cola). Não invente nada novo, apenas organize no formato proposto. 

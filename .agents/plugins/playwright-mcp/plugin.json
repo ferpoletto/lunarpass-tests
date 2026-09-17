@@ -1,0 +1,5 @@
+﻿{
+    "description":  "Plugin de automacao e navegacao web com Playwright MCP Server",
+    "name":  "playwright-mcp",
+    "version":  "1.0.0"
+}

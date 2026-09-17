@@ -1,0 +1,9 @@
+--INTERFACE GRÁFICA
+yarn playwright test -- ui 
+
+--CODEGEN
+yarn playwright CODEGEN
+
+--DEBUG
+yarn playwright test --DEBUG
+

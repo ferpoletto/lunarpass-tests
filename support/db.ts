@@ -1,10 +1,10 @@
 import { Pool } from 'pg'
-import { Kysely, PostgresDialect, CamelCasePlugin} from 'kysely'
+import { Kysely, PostgresDialect, CamelCasePlugin } from 'kysely'
 import { Mission, Ticket, Reservation } from './types'
 
 interface Database {
     missions: Mission,
-    reservations: Reservation, 
+    reservations: Reservation,
     tickets: Ticket
 }
 
@@ -20,6 +20,17 @@ export const db = new Kysely<Database>({
     dialect,
     plugins: [new CamelCasePlugin()]
 })
+
+export async function cleanAndInsertMission(mission: Mission) {
+    await cleanMission(mission)
+    await insertMission(mission)
+}
+
+export async function cleanMission(mission: Mission) {
+    await deleteReservation(mission.id)
+    await deleteTicket(mission.id)
+    await deleteMission(mission.id)
+}
 
 export async function insertMission(mission: Mission) {
     await db
