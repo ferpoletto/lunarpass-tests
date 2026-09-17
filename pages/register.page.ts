@@ -1,5 +1,24 @@
-import {Page, Locator} from '@playwright/test';
+import {Page, Locator, expect} from '@playwright/test';
 import { Mission } from '../support/types';
+
+function formatDate(dateString: string): string {
+    const months = [
+        'jan.', 'fev.', 'mar.', 'abr.', 'mai.', 'jun.',
+        'jul.', 'ago.', 'set.', 'out.', 'nov.', 'dez.'
+    ];
+
+    const [year, month, day] = dateString.split('-').map(Number);
+
+    if (!year || !month || !day || month < 1 || month > 12) {
+        throw new Error(`Invalid date format: "${dateString}". Expected AAAA-MM-DD.`);
+    }
+
+    const dayNumber = parseInt(String(day), 10); // removes leading zero, e.g. "05" -> 5
+    const monthName = months[month - 1];
+
+    return `${dayNumber} de ${monthName} de ${year}`;
+}
+
 
 export class RegisterPage {
     readonly page: Page
@@ -30,6 +49,7 @@ export class RegisterPage {
         await this.page.getByRole('textbox', { name: 'Foguete' }).fill(mission.rocket)
         await this.page.getByLabel('Base lunar').selectOption(mission.baseId)
         await this.page.getByRole('textbox', { name: 'Data de partida' }).fill(mission.departureDate)
+        await expect(this.page.getByTestId('mission-form-return-date')).toContainText(formatDate(mission.returnDate))
         await this.page.getByRole('spinbutton', { name: 'Preço por passagem (USD)' }).fill(mission.price.toString())
         await this.saveButton.click()
     }
