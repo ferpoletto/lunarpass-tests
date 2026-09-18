@@ -1,81 +1,93 @@
 import { test, expect } from '@playwright/test'
-import { LoginPage } from '../pages/login.page'
-import { Navbar } from '../pages/components/navbar'
 import { faker } from '@faker-js/faker'
-import { Mission } from '../support/types'
+
+import { LoginPage } from '../pages/login.page'
 import { DashPage } from '../pages/dash.page'
 import { RegisterPage } from '../pages/register.page'
-import { Toasty } from '../pages/components/toasty'
-import { insertMission, cleanMission, cleanAndInsertMission } from '../support/db'
 
+import { Navbar } from '../pages/components/navbar'
+import { Toast } from '../pages/components/toast'
+
+import { Mission } from '../support/types'
+
+import { cleanMission, cleanAndInsertMission } from '../support/db'
 
 let loginPage: LoginPage
-let navbar: Navbar
 let dashPage: DashPage
-let toasty: Toasty
 let registerPage: RegisterPage
+let navbar: Navbar
+let toast: Toast
 
 test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page)
-    navbar = new Navbar(page)
-    dashPage = new DashPage(page)
-    toasty = new Toasty(page)
-    registerPage = new RegisterPage(page)
-    await loginPage.go()
-    await loginPage.login('buzz@lunarpass.dev', 'pwd123')
+  loginPage = new LoginPage(page)
+  dashPage = new DashPage(page)
+  registerPage = new RegisterPage(page)
+
+  navbar = new Navbar(page)
+  toast = new Toast(page)
+
+  // Arrange - preparação do cenário
+  await loginPage.go()
+  await loginPage.login('buzz@lunarpass.dev', 'pwd123')
+  await expect(navbar.logout).toBeVisible({ timeout: 10_000 })
 })
 
 test('deve cadastrar uma nova missão', async ({ page }) => {
-    const mission: Mission = {
-        id: 'LP-0128A',
-        rocket: 'Starship',
-        baseId: 'aurora',
-        departureDate: '2028-01-20',
-        returnDate: '2028-01-27',
-        price: 1000.00
-    }
 
-    await cleanMission(mission)
+  const mission: Mission = {
+    id: 'LP-0128A',
+    rocket: 'Starship',
+    baseId: 'aurora',
+    departureDate: '2028-01-20',
+    returnDate: '2028-01-27',
+    price: 1000.00
+  }
 
-    await dashPage.addButton.click()
-    await expect(registerPage.title).toBeVisible()
+  await cleanMission(mission)
 
-    await registerPage.submitMission(mission)
-    await expect(toasty.message).toContainText('A nova missão foi adicionada ao catálogo e já está disponível para reservas.');
+  await dashPage.addButton.click()
+  await expect(registerPage.title).toBeVisible()
+  await registerPage.submit(mission)
+
+  await expect(toast.message).toContainText('A nova missão foi adicionada ao catálogo e já está disponível para reservas.')
 })
 
-test('não deve cadastrar missão com ID fora do padrão', async ({ page }) => {
-    const mission: Mission = {
-        id: faker.string.alphanumeric({ length: { min: 5, max: 5 }, casing: 'upper' }),
-        rocket: 'Starship',
-        baseId: 'aurora',
-        departureDate: '2028-01-20',
-        returnDate: '2028-01-27',
-        price: 1000.00
-    }
+test('não deve cadastrar com código de missão incorreto', async ({ page }) => {
 
-    await dashPage.addButton.click()
-    await expect(registerPage.title).toBeVisible()
+  const mission: Mission = {
+    id: faker.string.alphanumeric({ length: { min: 5, max: 5 }, casing: 'upper' }),
+    rocket: 'Starship',
+    baseId: 'aurora',
+    departureDate: '2028-01-20',
+    returnDate: '2028-01-27',
+    price: 1000.00
+  }
 
-    await registerPage.submitMission(mission)
-    await expect(registerPage.alert).toContainText('Use o formato LP-0000')
+  await dashPage.addButton.click()
+  await expect(registerPage.title).toBeVisible()
+  await registerPage.submit(mission)
+
+  await expect(registerPage.alert).toHaveText('Use o formato LP-0000')
 })
 
-test('não deve cadastrar missão com código duplicado', async ({ page }) => {
-    const mission: Mission = {
-        id: 'LP-DUPY1',
-        rocket: 'Starship',
-        baseId: 'aurora',
-        departureDate: '2028-01-20',
-        returnDate: '2028-01-27',
-        price: 1000.00
-    }
+test('não deve cadastrar com código duplicado', async ({ page }) => {
+  // Arrange
+  const mission: Mission = {
+    id: 'LP-3001A',
+    rocket: 'Starship',
+    baseId: 'orion',
+    departureDate: '2030-01-20',
+    returnDate: '2030-01-27',
+    price: 500.00
+  }
 
-    await cleanAndInsertMission(mission)
+  await cleanAndInsertMission(mission)
 
-    await dashPage.addButton.click()
-    await expect(registerPage.title).toBeVisible()
+  // Act
+  await dashPage.addButton.click()
+  await expect(registerPage.title).toBeVisible()
+  await registerPage.submit(mission)
 
-    await registerPage.submitMission(mission)
-    await expect(registerPage.alert).toContainText('Já existe uma missão com este ID.')
+  // Assert
+  await expect(registerPage.alert).toHaveText('Já existe uma missão com este ID.')
 })
