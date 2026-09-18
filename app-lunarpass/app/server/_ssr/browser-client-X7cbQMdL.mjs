@@ -1,0 +1,1 @@
+import{n as e}from"./runtime-config-DN_zL13g.mjs";import{n as t}from"../_libs/@supabase/ssr+[...].mjs";var n;function r(){if(n)return n;let{url:r,publishableKey:i}=e();return n=t(r,i),n}export{r as t};

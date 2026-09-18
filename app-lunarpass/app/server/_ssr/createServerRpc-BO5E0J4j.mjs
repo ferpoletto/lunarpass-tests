@@ -1,0 +1,1 @@
+import{o as e}from"./server-CX0PtBVe.mjs";var t=(t,n)=>{let r=`/_serverFn/`+t.id;return Object.assign(n,{url:r,serverFnMeta:t,[e]:!0})};export{t};

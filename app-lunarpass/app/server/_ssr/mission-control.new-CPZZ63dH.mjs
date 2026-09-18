@@ -1,0 +1,1 @@
+import{D as e}from"../_libs/@radix-ui/react-alert-dialog+[...].mjs";import{t}from"./mission-form-page-CsO0Hhyu.mjs";var n=e();function r(){return(0,n.jsx)(t,{})}export{r as component};

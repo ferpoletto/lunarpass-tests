@@ -1,0 +1,1 @@
+import{s as e}from"./link-5xxuMOaM.js";import{k as t}from"./index-DyM9ofoL.js";var n=e();function r(e,t){return(0,n.jsx)(`span`,{role:t,children:e})}var i={success:(e,n)=>t.success(r(e,`status`),n),error:(e,n)=>t.error(r(e,`alert`),n)};export{i as t};

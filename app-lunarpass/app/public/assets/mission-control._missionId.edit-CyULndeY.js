@@ -1,0 +1,1 @@
+import{s as e}from"./link-5xxuMOaM.js";import{t}from"./mission-form-page-CMls8A_m.js";import{t as n}from"./index-DyM9ofoL.js";var r=e();function i(){let{mission:e}=n.useLoaderData();return(0,r.jsx)(t,{mission:e})}export{i as component};

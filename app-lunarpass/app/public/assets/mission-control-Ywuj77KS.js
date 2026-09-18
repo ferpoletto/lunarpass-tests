@@ -1,0 +1,1 @@
+import{s as e}from"./link-5xxuMOaM.js";import{n as t}from"./mission-control-shell-DJKO98E6.js";import{q as n,w as r}from"./index-DyM9ofoL.js";var i=e();function a(){let{session:e}=r.useRouteContext();return e?(0,i.jsx)(t,{children:(0,i.jsx)(n,{})}):(0,i.jsx)(n,{})}export{a as component};

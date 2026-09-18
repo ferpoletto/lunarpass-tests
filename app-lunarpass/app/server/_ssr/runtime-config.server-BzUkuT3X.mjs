@@ -1,0 +1,1 @@
+import{r as e}from"./runtime-config-DN_zL13g.mjs";function t(){return e()}function n(){let e=t();if(!e)throw Error("Supabase não configurado. No pacote acadêmico, rode `yarn setup` para gerar app/config/supabase.json.");return e}export{n as requireSupabaseServerRuntimeConfig};

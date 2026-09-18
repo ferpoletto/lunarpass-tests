@@ -1,0 +1,1 @@
+import{m as e}from"../_libs/@tanstack/react-router+[...].mjs";import{D as t}from"../_libs/@radix-ui/react-alert-dialog+[...].mjs";import{o as n}from"./router-Dy8lhkPw.mjs";import{t as r}from"./mission-control-shell-DslljuEW.mjs";var i=t();function a(){let{session:t}=n.useRouteContext();return t?(0,i.jsx)(r,{children:(0,i.jsx)(e,{})}):(0,i.jsx)(e,{})}export{a as component};

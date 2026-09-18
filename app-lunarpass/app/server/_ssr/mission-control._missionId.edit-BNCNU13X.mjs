@@ -1,0 +1,1 @@
+import{D as e}from"../_libs/@radix-ui/react-alert-dialog+[...].mjs";import{s as t}from"./router-Dy8lhkPw.mjs";import{t as n}from"./mission-form-page-CsO0Hhyu.mjs";var r=e();function i(){let{mission:e}=t.useLoaderData();return(0,r.jsx)(n,{mission:e})}export{i as component};

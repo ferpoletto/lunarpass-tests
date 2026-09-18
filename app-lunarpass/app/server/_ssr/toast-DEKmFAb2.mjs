@@ -1,0 +1,1 @@
+import{D as e}from"../_libs/@radix-ui/react-alert-dialog+[...].mjs";import{n as t}from"../_libs/sonner.mjs";var n=e();function r(e,t){return(0,n.jsx)(`span`,{role:t,children:e})}var i={success:(e,n)=>t.success(r(e,`status`),n),error:(e,n)=>t.error(r(e,`alert`),n)};export{i as t};
