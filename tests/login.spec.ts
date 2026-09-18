@@ -17,7 +17,7 @@ test('deve autenticar no controle de missões', async ({ page }) => {
     await expect(navbar.logoutButton).toBeVisible()
 })
 
-test('não deve autenticar com senha incorreta', async ({ page }) => {
+test('não deve autenticar com senha incorreta - git', async ({ page }) => {
 
     await loginPage.login('buzz@lunarpass.dev', 'pwdaaa123')
     await expect(loginPage.alert).toHaveText('E-mail ou senha inválidos.')
