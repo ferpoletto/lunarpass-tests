@@ -30,6 +30,7 @@ export async function cleanMission(mission: Mission) {
     await deleteReservation(mission.id)
     await deleteTicket(mission.id)
     await deleteMission(mission.id)
+    log.console(`Missão ${mission.id} removida do banco de dados`)
 }
 
 export async function insertMission(mission: Mission) {
