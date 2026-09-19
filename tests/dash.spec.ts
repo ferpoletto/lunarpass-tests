@@ -27,6 +27,35 @@ test('deve consultar missão com sucesso', async ({ page }) => {
     }
     await cleanAndInsertMission(mission)
     await dashPage.searchMission(mission.id)
+    await dashPage.validateMissionRow(mission)
+
     await deleteMission(mission.id)
 })
 
+test('deve de excluir missão com sucesso', async ({ page }) => {
+    const mission: Mission = {
+        id: 'LP-0123DELETE',
+        rocket: 'Starship',
+        baseId: 'aurora',
+        departureDate: '2028-01-20',
+        returnDate: '2028-01-27',
+        price: 1000.00
+    }
+    await cleanAndInsertMission(mission)
+    await dashPage.searchMission(mission.id)
+    await dashPage.validateMissionRow(mission)
+    await dashPage.getDeleteButton(mission.id).click()
+
+
+    await deleteMission(mission.id)
+})
+
+
+/*
+
+
+test('não deve conseguir excluir missão com reserva', async ({ page }) => {
+
+
+})
+*/
