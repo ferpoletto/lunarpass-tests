@@ -3,19 +3,20 @@ import { Navbar } from './components/navbar';
 
 export class LoginPage {
     readonly page: Page;
+    readonly title: Locator;
     readonly alert: Locator;
     readonly navbar: Navbar;
     
     constructor(page: Page) {
         this.page = page;
+        this.title = page.getByRole('heading', { name: 'Mission Control' });
         this.alert = page.getByRole('alert');
         this.navbar = new Navbar(page);
     }
 
     async go() {
         await this.page.goto('http://localhost:3000/mission-control/login')
-        const title = this.page.getByRole('heading', {name: 'Mission Control'})
-        await expect(title).toBeVisible()
+        await expect(this.title).toBeVisible()
     }
 
     async login(email: string, password: string) {

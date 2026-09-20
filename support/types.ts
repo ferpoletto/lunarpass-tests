@@ -8,7 +8,13 @@ export interface Mission {
 }
 
 export interface Reservation {
+    id?: string
+    userId?: string
     missionId: string
+    reservationCode?: string
+    contactEmail?: string
+    totalPrice?: number
+    status?: string
 }
 
 
